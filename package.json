@@ -1,0 +1,14 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain for Hackathon, team Legen-waitforit-dary",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhishek Chhabra",
+  "license": "ISC",
+  "dependencies": {
+    "sha256": "^0.2.0"
+  }
+}
