@@ -8,7 +8,7 @@ const bitcoin = new Blockchain();
 
 // bitcoin.createNewBlock(200, 'HJHKD67k', 'SSDTYD8976Y');
 
-// bitcoin.createNewTransaction(2000, 'MUMMY5657GH', 'ABHISHEK6767F');
+bitcoin.createNewTransaction(2000, 'MUMMY5657GH', 'ABHISHEK6767F');
 // bitcoin.createNewTransaction(3000, 'MUMMY5657GH', 'ABHISHEK6767F');
 // bitcoin.createNewTransaction(4000, 'MUMMY5657GH', 'ABHISHEK6767F');
 
@@ -33,4 +33,4 @@ const bitcoin = new Blockchain();
 //     }
 // ];
 
-console.log(bitcoin);
+console.log(bitcoin.createNewTransaction(2000, 'MUMMY5657GH', 'ABHISHEK6767F'));
