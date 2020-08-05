@@ -254,6 +254,18 @@ app.get('/block-explorer', function(request, response) {
     response.sendFile('./block-explorer/index.html', {root: __dirname});
 });
 
+app.get('/blockchain/json', function(request, response) {
+    response.sendFile('./block-explorer/blockchain.html', {root: __dirname});
+});
+
+app.get('/mine/json', function(request, response) {
+    response.sendFile('./block-explorer/mine.html', {root: __dirname});
+});
+
+app.get('/consensus/json', function(request, response) {
+    response.sendFile('./block-explorer/consensus.html', {root: __dirname});
+});
+
 app.listen(port, function() {
     console.log(`Listening on ${port} ...`);
 });

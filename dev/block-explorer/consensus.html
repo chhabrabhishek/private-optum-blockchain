@@ -1,0 +1,30 @@
+<!DOCTYPE html> 
+<html> 
+  
+<head> 
+    <title> 
+        Consensus
+    </title> 
+</head> 
+  
+<body onload="getBlockchain()">
+      
+    <pre id="BLOCKCHAIN" style= 
+        "font-size: 20px; font-weight: bold;"> 
+    </pre> 
+      
+    <script> 
+        var blockchain = document.getElementById("BLOCKCHAIN"); 
+        var blockchainObject = null;
+        
+        function getBlockchain() { 
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "/consensus", false );
+            xmlHttp.send( null );
+            blockchainObject = JSON.parse(xmlHttp.responseText);
+            blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+        } 
+    </script> 
+</body> 
+  
+</html> 

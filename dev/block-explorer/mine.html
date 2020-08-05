@@ -1,0 +1,30 @@
+<!DOCTYPE html> 
+<html> 
+  
+<head> 
+    <title> 
+        Mine Blockchain 
+    </title> 
+</head> 
+  
+<body onload="mineBlock()">
+      
+    <pre id="BLOCK" style= 
+        "font-size: 20px; font-weight: bold;"> 
+    </pre> 
+      
+    <script> 
+        var block = document.getElementById("BLOCK"); 
+        var blockObject = null;
+        
+        function mineBlock() { 
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "/mine", false );
+            xmlHttp.send( null );
+            blockObject = JSON.parse(xmlHttp.responseText);
+            block.innerHTML = JSON.stringify(blockObject, undefined, 4);
+        } 
+    </script> 
+</body> 
+  
+</html> 
