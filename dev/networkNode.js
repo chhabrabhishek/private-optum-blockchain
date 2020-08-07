@@ -46,6 +46,7 @@ app.post('/transaction/broadcast', function(request, response) {
         response.json({note: 'Transaction created and broadcast successfully!'});
     })
     .catch(function(error){
+        response.json({note: 'Something went wrong!'});
         console.log(error);
     });
 });
@@ -122,9 +123,9 @@ app.post('/receive-new-block', function(request, response) {
 });
 
 //register a node and broadcast it in the network
-app.post('/register-and-broadcast-node', function(request, response) {
+app.post('/register-and-broadcast-node', function(request, response) {    
     const newNodeUrl = request.body.newNodeUrl;
-    if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1) bitcoin.networkNodes.push(newNodeUrl);
+    if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1 && bitcoin.currentNodeUrl !== newNodeUrl) bitcoin.networkNodes.push(newNodeUrl);
 
     const registerNodesPromises = [];
     bitcoin.networkNodes.forEach(networkNodeUrl => {
@@ -151,6 +152,7 @@ app.post('/register-and-broadcast-node', function(request, response) {
         response.json({note: 'New node registered with network successfully!'});7
     })
     .catch(function(err){
+        response.json({note: 'Something went wrong!'});
         console.log(err);
     });
 });
@@ -161,7 +163,7 @@ app.post('/register-node', function(request, response) {
     const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1;
     const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl;
     if(nodeNotAlreadyPresent && notCurrentNode) bitcoin.networkNodes.push(newNodeUrl);
-    
+
     response.json({note: 'New node registered successfully!'});
 });
 

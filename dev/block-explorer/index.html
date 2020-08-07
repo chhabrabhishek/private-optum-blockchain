@@ -118,6 +118,60 @@
 
 			</div>
 		</div>
+		<div class="div-blockchain">
+			<button
+				class="btn btn-primary bb btn-blockchain" onclick="getBlockchain()">
+					Blockchain
+			</button>
+			<button
+				class="btn btn-primary bb btn-mine" onclick="mineBlock()">
+					Mine
+			</button>
+			<button
+				class="btn btn-primary bb btn-consensus" onclick="consensus()">
+					Consensus
+			</button>
+			<button
+				class="btn btn-primary bb btn-broadcast-node" onclick="showInput()">
+					Broadcast New Node
+			</button>
+			<button
+				class="btn btn-primary bb btn-transaction" onclick="showInputTrans()">
+					Transaction
+			</button>
+		</div>
+		<br>
+		<div id="NODE" class="hide">
+			<div>
+				<input placeholder="Enter the address of node you want to add" type="text" class="form-control node-input" id="nodeValue" name="nodeValue">
+			</div>
+				<br>
+			<button
+				class="btn btn-primary bb btn-submit-node" onclick="newNode(document.getElementById('nodeValue').value)">
+					Submit
+			</button>
+		</div>
+		<div id="TRANSACTION" class="hide">
+			<div>
+				<input placeholder="Enter the amount of transaction" type="text" class="form-control node-input" id="amount" name="amount">
+			</div>
+			<br>
+			<div>
+				<input placeholder="Enter the address of sender" type="text" class="form-control node-input" id="sender" name="sender">
+			</div>
+			<br>
+			<div>
+				<input placeholder="Enter the address of recipient" type="text" class="form-control node-input" id="recipient" name="recipient">
+			</div>
+			<br>
+			<button
+				class="btn btn-primary bb btn-submit-node" onclick="newTransaction(document.getElementById('amount').value, document.getElementById('sender').value, document.getElementById('recipient').value)">
+					Submit
+			</button>
+		</div>
+		<pre id="BLOCKCHAIN" style= 
+			"font-size: 20px; font-weight: bold;"> 
+		</pre>
 	</div>
 
 	<script>
@@ -172,6 +226,90 @@
 			};
 
 		});
+
+		var blockchain = document.getElementById("BLOCKCHAIN"); 
+        var blockchainObject = null;
+
+		function getBlockchain() { 
+			document.getElementById("NODE").className="hide";
+			document.getElementById("TRANSACTION").className="hide";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "/blockchain", false );
+            xmlHttp.send( null );
+            blockchainObject = JSON.parse(xmlHttp.responseText);
+            blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+		} 
+		
+		function mineBlock() { 
+			document.getElementById("NODE").className="hide";
+			document.getElementById("TRANSACTION").className="hide";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "/mine", false );
+            xmlHttp.send( null );
+            blockchainObject = JSON.parse(xmlHttp.responseText);
+            blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+		} 
+		
+		function consensus() { 
+			document.getElementById("NODE").className="hide";
+			document.getElementById("TRANSACTION").className="hide";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "/consensus", false );
+            xmlHttp.send( null );
+            blockchainObject = JSON.parse(xmlHttp.responseText);
+            blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+		} 
+		
+		function newNode(value) {
+			if(value.trim() == "" || value == null){
+				window.alert("Enter a valid value")
+			}
+			else{
+				document.getElementById("NODE").className="hide";
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open("POST", "/register-and-broadcast-node", false);
+				const json = {
+					"newNodeUrl": value
+				}
+				xmlHttp.setRequestHeader('Content-Type', 'application/json');
+				xmlHttp.send(JSON.stringify(json));
+				blockchainObject = JSON.parse(xmlHttp.responseText);
+				blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+			}
+		}
+
+		function newTransaction(amount, sender, recipient) {
+			if(amount.trim() == "" || isNaN(Number.parseInt(amount))){
+				window.alert("Enter a valid amount!");
+			}
+			else if(sender.trim() == "" || recipient.trim() == ""){
+				window.alert("Enter a valid address!");
+			}
+			else{
+				document.getElementById("TRANSACTION").className="hide";
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open("POST", "/transaction/broadcast", false);
+				const json = {
+					"amount": amount,
+					"sender": sender,
+					"recipient": recipient
+				}
+				xmlHttp.setRequestHeader('Content-Type', 'application/json');
+				xmlHttp.send(JSON.stringify(json));
+				blockchainObject = JSON.parse(xmlHttp.responseText);
+				blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+			}
+		}
+
+		function showInput() {
+			document.getElementById("TRANSACTION").className="hide";
+			document.getElementById("NODE").className="show";
+		}
+
+		function showInputTrans() {
+			document.getElementById("NODE").className="hide";
+			document.getElementById("TRANSACTION").className="show";
+		}
 	</script>
 
 	<style type="text/css">
@@ -212,6 +350,22 @@
 		}
 		.no-data-text {
 			color: red;
+			text-align: center;
+		}
+		.div-blockchain{
+			width: 100%;
+  			text-align: center;
+		}
+		.bb{
+			display: inline-block;
+		}
+		.hide{
+			display: none;
+		}
+		.node-input{
+			display: inline-block;
+		}
+		.show{
 			text-align: center;
 		}
 	</style>
