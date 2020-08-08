@@ -316,20 +316,26 @@
 		} 
 		
 		function newNode(value) {
-			if(value.trim() == "" || value == null){
-				window.alert("Enter a valid value")
+			var password = prompt("This is a simulaton of a private blockchain, Enter the password `optum` if you want to be an active node!");
+			if(password == 'optum'){
+				if(value.trim() == "" || value == null){
+					window.alert("Enter a valid value")
+				}
+				else{
+					document.getElementById("NODE").className="hide";
+					var xmlHttp = new XMLHttpRequest();
+					xmlHttp.open("POST", "/register-and-broadcast-node", false);
+					const json = {
+						"newNodeUrl": value
+					}
+					xmlHttp.setRequestHeader('Content-Type', 'application/json');
+					xmlHttp.send(JSON.stringify(json));
+					blockchainObject = JSON.parse(xmlHttp.responseText);
+					blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+				}
 			}
 			else{
-				document.getElementById("NODE").className="hide";
-				var xmlHttp = new XMLHttpRequest();
-				xmlHttp.open("POST", "/register-and-broadcast-node", false);
-				const json = {
-					"newNodeUrl": value
-				}
-				xmlHttp.setRequestHeader('Content-Type', 'application/json');
-				xmlHttp.send(JSON.stringify(json));
-				blockchainObject = JSON.parse(xmlHttp.responseText);
-				blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+				window.alert("We can't add you to this private blockchain!");
 			}
 		}
 

@@ -142,7 +142,7 @@ app.post('/receive-new-block', function(request, response) {
 });
 
 //register a node and broadcast it in the network
-app.post('/register-and-broadcast-node', function(request, response) {    
+app.post('/register-and-broadcast-node', function(request, response) { 
     const newNodeUrl = request.body.newNodeUrl;
     if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1 && bitcoin.currentNodeUrl !== newNodeUrl) bitcoin.networkNodes.push(newNodeUrl);
 
