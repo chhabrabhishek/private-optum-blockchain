@@ -52,17 +52,24 @@ app.post('/transaction/broadcast', function(request, response) {
 });
 
 //mine a block
-app.get('/mine', function(request, response) {
-
+app.post('/mine', function(request, response) {
+    const fname = request.body.fname;
+    const lname = request.body.lname;
+    const patientId = request.body.patientId;
+    const facility = request.body.facility;
     const lastBlock = bitcoin.getLastBlock();
     const previousBlockHash = lastBlock['hash'];
     const currentBlockData = {
+        fname: fname,
+        lname: lname,
+        patientId: patientId,
+        facility: facility,
         transactions: bitcoin.pendingTransactions,
         index: lastBlock['index'] + 1
     };
     const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData);
     const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce);
-    const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash);
+    const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash, {fname: fname, lname: lname, patientId: patientId, facility: facility});
 
     const requestPromises = [];
     bitcoin.networkNodes.forEach(networkNodeUrl => {

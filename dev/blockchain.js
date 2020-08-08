@@ -9,17 +9,18 @@ function Blockchain() {
     this.currentNodeUrl = currentNodeUrl;
     this.networkNodes = [];
 
-    this.createNewBlock(0, '0', '0');
+    this.createNewBlock(0, '0', '0', {});
 };
 
-Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
+Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash, patientData) {
     const newBlock = {
         index: this.chain.length + 1,
         timestamp: Date.now(),
         transactions: this.pendingTransactions,
         nonce: nonce,
         hash: hash,
-        previousBlockHash: previousBlockHash
+        previousBlockHash: previousBlockHash,
+        patientData: patientData
     };
 
     this.pendingTransactions = [];
@@ -71,7 +72,7 @@ Blockchain.prototype.chainIsValid = function(blockchain) {
     for(var i = 1; i < blockchain.length; i++){
         const currentBlock = blockchain[i];
         const previousBlock = blockchain[i-1];
-        const blockHash = this.hashBlock(previousBlock['hash'], {transactions: currentBlock['transactions'], index: currentBlock['index']}, currentBlock['nonce']);
+        const blockHash = this.hashBlock(previousBlock['hash'], {fname: currentBlock.patientData['fname'], lname: currentBlock.patientData['lname'], patientId: currentBlock.patientData['patientId'], facility: currentBlock.patientData['facility'], transactions: currentBlock['transactions'], index: currentBlock['index']}, currentBlock['nonce']);
 
         if(currentBlock['previousBlockHash'] !== previousBlock['hash']) validChain = false;
         if(blockHash.substring(0,4) !== '0000') validChain = false;

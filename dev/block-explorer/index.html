@@ -124,7 +124,7 @@
 					Blockchain
 			</button>
 			<button
-				class="btn btn-primary bb btn-mine" onclick="mineBlock()">
+				class="btn btn-primary bb btn-mine" onclick="showInputMine()">
 					Mine
 			</button>
 			<button
@@ -166,6 +166,28 @@
 			<br>
 			<button
 				class="btn btn-primary bb btn-submit-node" onclick="newTransaction(document.getElementById('amount').value, document.getElementById('sender').value, document.getElementById('recipient').value)">
+					Submit
+			</button>
+		</div>
+		<div id="MINE" class="hide">
+			<div>
+				<input placeholder="Enter the First Name of patient" type="text" class="form-control node-input" id="fname" name="fname">
+			</div>
+			<br>
+			<div>
+				<input placeholder="Enter the Last Name of patient" type="text" class="form-control node-input" id="lname" name="lname">
+			</div>
+			<br>
+			<div>
+				<input placeholder="Enter the Patient Id of patient" type="text" class="form-control node-input" id="patientId" name="patientId">
+			</div>
+			<br>
+			<div>
+				<input placeholder="Enter the Facility Name for patient" type="text" class="form-control node-input" id="facility" name="facility">
+			</div>
+			<br>
+			<button
+				class="btn btn-primary bb btn-submit-node" onclick="mineBlock(document.getElementById('fname').value, document.getElementById('lname').value, document.getElementById('patientId').value, document.getElementById('facility').value)">
 					Submit
 			</button>
 		</div>
@@ -233,6 +255,7 @@
 		function getBlockchain() { 
 			document.getElementById("NODE").className="hide";
 			document.getElementById("TRANSACTION").className="hide";
+			document.getElementById("MINE").className="hide";
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open( "GET", "/blockchain", false );
             xmlHttp.send( null );
@@ -240,19 +263,35 @@
             blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
 		} 
 		
-		function mineBlock() { 
-			document.getElementById("NODE").className="hide";
-			document.getElementById("TRANSACTION").className="hide";
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", "/mine", false );
-            xmlHttp.send( null );
-            blockchainObject = JSON.parse(xmlHttp.responseText);
-            blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+		function mineBlock(fname, lname, patientId, facility) { 
+			if(patientId.trim() == "" || isNaN(Number.parseInt(patientId))){
+				window.alert("Enter a valid patient id.");
+			}
+			else if(fname.trim() == "" || lname.trim() == "" || facility.trim() == ""){
+				window.alert("Enter a valid value.");
+			}
+			else{
+				document.getElementById("NODE").className="hide";
+				document.getElementById("TRANSACTION").className="hide";
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open( "POST", "/mine", false );
+				const json = {
+						"fname": fname,
+						"lname": lname,
+						"patientId": patientId,
+						"facility": facility
+				}
+				xmlHttp.setRequestHeader('Content-Type', 'application/json');
+				xmlHttp.send(JSON.stringify(json));
+				blockchainObject = JSON.parse(xmlHttp.responseText);
+				blockchain.innerHTML = JSON.stringify(blockchainObject, undefined, 4);
+			}
 		} 
 		
 		function consensus() { 
 			document.getElementById("NODE").className="hide";
 			document.getElementById("TRANSACTION").className="hide";
+			document.getElementById("MINE").className="hide";
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open( "GET", "/consensus", false );
             xmlHttp.send( null );
@@ -303,12 +342,20 @@
 
 		function showInput() {
 			document.getElementById("TRANSACTION").className="hide";
+			document.getElementById("MINE").className="hide";
 			document.getElementById("NODE").className="show";
 		}
 
 		function showInputTrans() {
 			document.getElementById("NODE").className="hide";
+			document.getElementById("MINE").className="hide";
 			document.getElementById("TRANSACTION").className="show";
+		}
+
+		function showInputMine() {
+			document.getElementById("NODE").className="hide";
+			document.getElementById("TRANSACTION").className="hide";
+			document.getElementById("MINE").className="show";
 		}
 	</script>
 
