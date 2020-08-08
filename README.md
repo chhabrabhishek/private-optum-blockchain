@@ -9,4 +9,4 @@
   * Each port will signify a different node inside the network.
 * Access the application inside any modern browser (**avoid IE**) using `http://localhost:port/block-explorer` address.
 * The blockchain is ready and up, use broadcast new node button to add nodes to the network.
-* While broadcasting new node, it will ask you for a password as it is private blockchain simulation. The password is `**optum**`.
+* While broadcasting new node, it will ask you for a password as it is private blockchain simulation. The password is **optum**.
