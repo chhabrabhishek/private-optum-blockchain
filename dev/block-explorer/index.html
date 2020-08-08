@@ -71,6 +71,22 @@
 							<td class="bold">Number Transactions</td>
 							<td>{{ block.transactions.length }}</td>
 						</tr>
+						<tr>	
+							<td class="bold">First Name</td>
+							<td>{{ block.patientData['fname'] }}</td>
+						</tr>
+						<tr>	
+							<td class="bold">Last Name</td>
+							<td>{{ block.patientData['lname'] }}</td>
+						</tr>
+						<tr>	
+							<td class="bold">Patient Id</td>
+							<td>{{ block.patientData['patientId'] }}</td>
+						</tr>
+						<tr>	
+							<td class="bold">Facility Name</td>
+							<td>{{ block.patientData['facility'] }}</td>
+						</tr>
 					</tbody>
 				</table>
 				<!-- end 'display block' table -->

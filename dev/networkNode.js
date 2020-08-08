@@ -43,7 +43,7 @@ app.post('/transaction/broadcast', function(request, response) {
 
     Promise.all(requestPromises)
     .then(data => {
-        response.json({note: 'Transaction created and broadcast successfully!'});
+        response.json({note: 'Transaction created and broadcast successfully, it will be added to next mined block! Check the pending transactions in the blockchain!'});
     })
     .catch(function(error){
         response.json({note: 'Something went wrong!'});
@@ -67,43 +67,55 @@ app.post('/mine', function(request, response) {
         transactions: bitcoin.pendingTransactions,
         index: lastBlock['index'] + 1
     };
-    const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData);
-    const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce);
-    const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash, {fname: fname, lname: lname, patientId: patientId, facility: facility});
-
-    const requestPromises = [];
-    bitcoin.networkNodes.forEach(networkNodeUrl => {
-        const requestOptions = {
-            uri: networkNodeUrl + '/receive-new-block',
-            method: 'POST',
-            body: {newBlock: newBlock},
-            json: true
+    let patientPresent = false;
+    bitcoin.chain.forEach(block => {
+        if(block.patientData['patientId'] == patientId){
+            patientPresent = true;
         }
-
-        requestPromises.push(requestPromise(requestOptions));
     });
+    if(patientPresent){
+        response.json({note: 'This patient have been added to chain. Please refer blockchain to check the patient id'});
+    }
+    else{
+        const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData);
+        const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce);
+        const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash, {fname: fname, lname: lname, patientId: patientId, facility: facility});
 
-    Promise.all(requestPromises)
-    .then(data => {
-        const requestOptions = {
-            uri: bitcoin.currentNodeUrl + '/transaction/broadcast',
-            method: 'POST',
-            body: {
-                amount: 12.5,
-                sender: '00',
-                recipient: nodeAddress
-            },
-            json: true
-        };
+        const requestPromises = [];
+        bitcoin.networkNodes.forEach(networkNodeUrl => {
+            const requestOptions = {
+                uri: networkNodeUrl + '/receive-new-block',
+                method: 'POST',
+                body: {newBlock: newBlock},
+                json: true
+            }
 
-        return requestPromise(requestOptions);
-    })
-    .then(data => {
-        response.json({
-            note: "New block mined and broadcast successfully!",
-            block: newBlock
+            requestPromises.push(requestPromise(requestOptions));
         });
-    });
+
+        Promise.all(requestPromises)
+        .then(data => {
+            const requestOptions = {
+                uri: bitcoin.currentNodeUrl + '/transaction/broadcast',
+                method: 'POST',
+                body: {
+                    amount: 12.5,
+                    sender: '00',
+                    recipient: nodeAddress
+                },
+                json: true
+            };
+
+            return requestPromise(requestOptions);
+        })
+        .then(data => {
+            response.json({
+                note: "New block mined and broadcast successfully! Check the last block in blockchain, you'll find all your pending transactions in this block!",
+                reward: "A reward of 12.5 has been added to the pending transactions for the block mined",
+                block: newBlock
+            });
+        });
+    }
 
 });
 
@@ -156,7 +168,7 @@ app.post('/register-and-broadcast-node', function(request, response) {
         return requestPromise(bulkRegisterOptions);
     })
     .then(data => {
-        response.json({note: 'New node registered with network successfully!'});7
+        response.json({note: `New node registered with network successfully! Go to ${newNodeUrl}/block-explorer and check the network nodes. Don't forget to click the consensus, to get the latest blockchain.`});
     })
     .catch(function(err){
         response.json({note: 'Something went wrong!'});
@@ -223,7 +235,7 @@ app.get('/consensus', function(request, response) {
             bitcoin.chain = newLongestChain;
             bitcoin.pendingTransactions = newPendingTransactions;
             response.json({
-                note: 'This chain has been replaced',
+                note: 'This chain has been replaced! Refer the blockchain to check!',
                 chain: bitcoin.chain
             })
         }

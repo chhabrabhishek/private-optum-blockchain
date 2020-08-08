@@ -9,7 +9,7 @@ function Blockchain() {
     this.currentNodeUrl = currentNodeUrl;
     this.networkNodes = [];
 
-    this.createNewBlock(0, '0', '0', {});
+    this.createNewBlock(0, '0', '0', {fname: 'Genesis', lname: 'Block', patientId: 0, facility: 'None'});
 };
 
 Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash, patientData) {
